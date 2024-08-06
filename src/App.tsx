@@ -1,35 +1,103 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+
+export type propertyDataType = {
+  brokered_by: string;
+  status: string;
+  price: string;
+  bed: string;
+  bath: string;
+  acre_lot: string;
+  street: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  house_size: string;
+  prev_sold_date: string;
+};
+
+export type similarPropertyType = {
+  property: propertyDataType;
+  relevance_score: number;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [estimatedRes, setEstimatedRes] = useState("");
+  const [similarProp, setSimilarProp] = useState<similarPropertyType[] | []>(
+    []
+  );
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const city = formData.get("city");
+    const state = formData.get("state");
+    const size = formData.get("size");
+    const rooms = formData.get("rooms");
+    const condition = formData.get("condition");
+    const bath = formData.get("bath");
+    const acre_lot = formData.get("acre_lot");
+    const data = {
+      city,
+      state,
+      size,
+      rooms,
+      condition,
+      bath,
+      acre_lot,
+    };
+    fetch("http://localhost:3000/estimate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setEstimatedRes(data.estimatedValue);
+        setSimilarProp(data.rankedProperties);
+      });
+  };
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <h1>Welcome to the property valuation tool</h1>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="location">City:</label>
+          <input type="text" id="city" name="city" />
+          <label htmlFor="state">State:</label>
+          <input type="text" id="state" name="state" />
+          <label htmlFor="size">Size (sq ft):</label>
+          <input type="text" id="size" name="size" />
+          <label htmlFor="rooms">Number of rooms:</label>
+          <input type="text" id="rooms" name="rooms" />
+          <label htmlFor="condition">Condition of property:</label>
+          <input type="text" id="condition" name="condition" />
+          <label htmlFor="bath">Number of baths:</label>
+          <input type="text" id="bath" name="bath" />
+          <label htmlFor="rooms">acreage:</label>
+          <input type="text" id="acre_lot" name="acre_lot" />
+          <button type="submit">Estimate Value</button>
+        </form>
+
+        <div>
+          <p>{estimatedRes}</p>
+          {similarProp?.map((prop) => (
+            <div key={prop.relevance_score} className="card">
+              <p> City: {prop.property.city}</p>
+              <p>State: {prop.property.state}</p>
+              <p>SquareFeet: {prop.property.house_size}</p>
+              <p>Bedrooms {prop.property.bed}</p>
+              <p>Bathrooms{prop.property.bath}</p>
+              <p>Acreage{prop.property.acre_lot}</p>
+              <p>Price: {prop.property.price}</p>
+            </div>
+          ))}
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
