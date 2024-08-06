@@ -22,6 +22,7 @@ export type similarPropertyType = {
 };
 
 function App() {
+  const [formHide, setFormHide] = useState(false);
   const [estimatedRes, setEstimatedRes] = useState("");
   const [similarProp, setSimilarProp] = useState<similarPropertyType[] | []>(
     []
@@ -46,6 +47,7 @@ function App() {
       bath,
       acre_lot,
     };
+    setFormHide(true);
     fetch("http://localhost:3000/estimate", {
       method: "POST",
       headers: {
@@ -63,7 +65,10 @@ function App() {
     <>
       <div>
         <h1>Welcome to the property valuation tool</h1>
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+          className={`form ${!formHide ? "form-visible" : "form-hidden"}`}
+        >
           <label htmlFor="location">City:</label>
           <input type="text" id="city" name="city" />
           <label htmlFor="state">State:</label>
@@ -78,7 +83,9 @@ function App() {
           <input type="text" id="bath" name="bath" />
           <label htmlFor="rooms">acreage:</label>
           <input type="text" id="acre_lot" name="acre_lot" />
-          <button type="submit">Estimate Value</button>
+          <button type="submit" className="button">
+            Estimate Value
+          </button>
         </form>
 
         <div>

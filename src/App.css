@@ -41,3 +41,23 @@
 .read-the-docs {
   color: #888;
 }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  max-width: 20em;
+  margin: 0 auto;
+}
+
+.form-visible {
+  display: flex;
+}
+
+.form-hidden {
+  display: none;
+}
+
+.button {
+  background-color: red;
+}
