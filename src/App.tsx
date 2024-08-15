@@ -27,6 +27,7 @@ function App() {
   const [similarProp, setSimilarProp] = useState<similarPropertyType[] | []>(
     []
   );
+  const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,7 +49,7 @@ function App() {
       acre_lot,
     };
     setFormHide(true);
-    fetch("http://localhost:3000/estimate", {
+    fetch("http://localhost:3000/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,8 +58,10 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setEstimatedRes(data.estimatedValue);
-        setSimilarProp(data.rankedProperties);
+        console.log(data);
+        // setEstimatedRes(data.estimatedValue);
+        // setSimilarProp(data.rankedProperties);
+        setQuery(data.response);
       });
   };
   return (
@@ -101,6 +104,7 @@ function App() {
               <p>Price: {prop.property.price}</p>
             </div>
           ))}
+          <p>{query}</p>
         </div>
       </div>
     </>
