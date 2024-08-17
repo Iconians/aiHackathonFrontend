@@ -7,6 +7,10 @@ import { Appointments } from "./Components/Appointments/Appointments";
 
 function App() {
   const [userId, setUserId] = useState<null | string>(null);
+  const [view, setView] = useState(0);
+  const [appointments, setAppointments] = useState<
+    { date: string; time: string; info: string }[]
+  >([]);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -23,11 +27,53 @@ function App() {
     fetchUserId();
   }, []);
 
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/appointments", {
+          params: {
+            userId: userId,
+          },
+        });
+        console.log(response);
+        setAppointments(response.data.appointments);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+    fetchAppointments();
+  }, [userId, appointments.length]);
+
   return (
     <>
-      <ChatComponent />
-      <ScheduleComponent userId={userId} />
-      <Appointments userId={userId} />
+      <h1>Realtor assistant</h1>
+      <div>
+        {view === 0 ? (
+          <div>
+            <h2>How can I help you today</h2>
+            <button onClick={() => setView(1)}>have a questions</button>
+            <button onClick={() => setView(2)}>Schedule an appointment</button>
+          </div>
+        ) : view === 1 ? (
+          <div>
+            <h2>Hi I am a AI assistant, how can I help you today</h2>
+            <ChatComponent userId={userId} />
+            <button onClick={() => setView(2)}>Schedule an appointment</button>
+          </div>
+        ) : (
+          <div>
+            <h2>
+              please schedule an appointment, we look forward to helping you
+            </h2>
+            <ScheduleComponent
+              userId={userId}
+              setAppointments={setAppointments}
+            />
+            <Appointments userId={userId} appointments={appointments} />
+            <button onClick={() => setView(1)}>have a questions</button>
+          </div>
+        )}
+      </div>
     </>
   );
 }

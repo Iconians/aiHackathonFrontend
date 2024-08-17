@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-export const ChatComponent = () => {
+export const ChatComponent = ({ userId }: { userId: string | null }) => {
   const [messages, setMessages] = useState<{ text: string; type: string }[]>(
     []
   );
@@ -14,8 +14,11 @@ export const ChatComponent = () => {
     setMessages([...messages, userMessage]);
 
     try {
+      console.log(messages);
       const response = await axios.post("http://localhost:3000/chat", {
+        prevMessages: messages,
         message: input,
+        userId: userId,
       });
       console.log(response);
       if (response.data.answer) {
