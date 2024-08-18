@@ -5,24 +5,30 @@ import { ChatComponent } from "./Components/ChatComponent/ChatComponent";
 import { ScheduleComponent } from "./Components/ScheduleComponent/ScheduleComponnt";
 import { Appointments } from "./Components/Appointments/Appointments";
 
+type appointment = {
+  appointments: {
+    date: string;
+    time: string;
+    info: string;
+    fullName: string;
+    phone: string;
+    email: string;
+  }[];
+};
+
 function App() {
-  const [userId, setUserId] = useState<null | string>(null);
   const [view, setView] = useState(0);
-  const [appointments, setAppointments] = useState<
-    { date: string; time: string; info: string }[]
-  >([]);
+  const [appointments, setAppointments] = useState<appointment["appointments"]>(
+    []
+  );
 
   useEffect(() => {
     const fetchUserId = async () => {
       const apiUrl = import.meta.env.VITE_API_URL;
-      console.log(apiUrl);
       const storedUserId = localStorage.getItem("userId");
-      if (storedUserId) {
-        setUserId(storedUserId);
-      } else {
+      if (!storedUserId) {
         const response = await axios.get(`${apiUrl}/session`);
         localStorage.setItem("userId", response.data.userId);
-        setUserId(response.data.userId);
       }
     };
 
@@ -30,6 +36,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const userId = localStorage.getItem("userId");
     const apiUrl = import.meta.env.VITE_API_URL;
     const fetchAppointments = async () => {
       try {
@@ -38,14 +45,13 @@ function App() {
             userId: userId,
           },
         });
-        console.log(response);
         setAppointments(response.data.appointments);
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }
     };
     fetchAppointments();
-  }, [userId, appointments.length]);
+  }, [appointments.length]);
 
   return (
     <>
@@ -53,27 +59,30 @@ function App() {
       <div>
         {view === 0 ? (
           <div>
-            {/* make more clear */}
             <h2>How can I help you today</h2>
+            <p>
+              have questions choose have questions to chat with our AI assistant
+              otherwise please request an appointment to chat with one of our
+              Realtors
+            </p>
             <button onClick={() => setView(1)}>have a questions</button>
             <button onClick={() => setView(2)}>Schedule an appointment</button>
           </div>
         ) : view === 1 ? (
           <div>
             <h2>Hi I am a AI assistant, how can I help you today</h2>
-            <ChatComponent userId={userId} />
+            <ChatComponent />
             <button onClick={() => setView(2)}>Schedule an appointment</button>
           </div>
         ) : (
           <div>
             <h2>
-              please schedule an appointment, we look forward to helping you
+              please request an appointment, we look forward to helping you
             </h2>
-            <ScheduleComponent
-              userId={userId}
-              setAppointments={setAppointments}
-            />
-            <Appointments userId={userId} appointments={appointments} />
+            <ScheduleComponent setAppointments={setAppointments} />
+            {appointments.length && (
+              <Appointments appointments={appointments} />
+            )}
             <button onClick={() => setView(1)}>have a questions</button>
           </div>
         )}

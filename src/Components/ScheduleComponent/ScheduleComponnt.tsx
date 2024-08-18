@@ -6,15 +6,16 @@ type Appointment = {
   date: string;
   time: string;
   info: string;
+  fullName: string;
+  phone: string;
+  email: string;
 };
 
 type SetAppointmentsType = React.Dispatch<React.SetStateAction<Appointment[]>>;
 
 export const ScheduleComponent = ({
-  userId,
   setAppointments,
 }: {
-  userId: string | null;
   setAppointments: SetAppointmentsType;
 }) => {
   const [date, setDate] = useState("");
@@ -24,6 +25,7 @@ export const ScheduleComponent = ({
   const [email, setEmail] = useState("");
   const [moreInfo, setMoreInfo] = useState("");
   const apiUrl = import.meta.env.VITE_API_URL;
+  const userId = localStorage.getItem("userId");
 
   const handleSchedule = async () => {
     if (!date || !time || !moreInfo || !fullName || !phone || !email) return;
@@ -34,9 +36,15 @@ export const ScheduleComponent = ({
         date,
         time,
         moreInfo,
+        fullName,
+        phone,
+        email,
       });
       alert("Appointment scheduled successfully!");
-      setAppointments((prev) => [...prev, { date, time, info: moreInfo }]);
+      setAppointments((prev) => [
+        ...prev,
+        { date, time, info: moreInfo, fullName, phone, email },
+      ]);
     } catch (error) {
       console.error("Error scheduling appointment:", error);
       alert("Failed to schedule appointment");
@@ -82,7 +90,7 @@ export const ScheduleComponent = ({
         rows={4}
         onChange={(e) => setMoreInfo(e.target.value)}
       ></textarea>
-      <button onClick={handleSchedule}>Schedule Viewing</button>
+      <button onClick={handleSchedule}>Request Appointment</button>
     </div>
   );
 };

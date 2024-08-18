@@ -1,17 +1,27 @@
 export const Appointments = ({
   appointments,
 }: {
-  userId: string | null;
-  appointments: { date: string; time: string; info: string }[];
+  appointments: {
+    date: string;
+    time: string;
+    info: string;
+    fullName: string;
+    phone: string;
+    email: string;
+  }[];
 }) => {
   return (
     <div>
       <div className="appointments">
+        <h3>requested appointments</h3>
         {appointments.map((appointment, index) => (
           <div key={index} className="appointment">
-            <div>{appointment.date}</div>
-            <div>{appointment.time}</div>
-            <div>{appointment.info}</div>
+            <div>Name: {appointment.fullName}</div>
+            <div>Phone: {appointment.phone}</div>
+            <div>Email: {appointment.email}</div>
+            <div>Date:{appointment.date}</div>
+            <div>Time: {appointment.time}</div>
+            <div>Details: {appointment.info}</div>
           </div>
         ))}
       </div>
