@@ -14,11 +14,13 @@ function App() {
 
   useEffect(() => {
     const fetchUserId = async () => {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      console.log(apiUrl);
       const storedUserId = localStorage.getItem("userId");
       if (storedUserId) {
         setUserId(storedUserId);
       } else {
-        const response = await axios.get("http://localhost:3000/session");
+        const response = await axios.get(`${apiUrl}/session`);
         localStorage.setItem("userId", response.data.userId);
         setUserId(response.data.userId);
       }
@@ -28,9 +30,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL;
     const fetchAppointments = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/appointments", {
+        const response = await axios.get(`${apiUrl}/appointments`, {
           params: {
             userId: userId,
           },
@@ -50,6 +53,7 @@ function App() {
       <div>
         {view === 0 ? (
           <div>
+            {/* make more clear */}
             <h2>How can I help you today</h2>
             <button onClick={() => setView(1)}>have a questions</button>
             <button onClick={() => setView(2)}>Schedule an appointment</button>

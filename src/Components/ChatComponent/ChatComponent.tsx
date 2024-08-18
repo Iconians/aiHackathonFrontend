@@ -13,9 +13,11 @@ export const ChatComponent = ({ userId }: { userId: string | null }) => {
     const userMessage = { text: input, type: "user" };
     setMessages([...messages, userMessage]);
 
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     try {
       console.log(messages);
-      const response = await axios.post("http://localhost:3000/chat", {
+      const response = await axios.post(`${apiUrl}/chat`, {
         prevMessages: messages,
         message: input,
         userId: userId,
@@ -39,9 +41,9 @@ export const ChatComponent = ({ userId }: { userId: string | null }) => {
     <div>
       <div className="chat-window">
         {messages.map((msg, index) => (
-          <div key={index} className={`chat-bubble ${msg.type}`}>
+          <pre key={index} className={`chat-bubble ${msg.type}`}>
             {msg.text}
-          </div>
+          </pre>
         ))}
       </div>
       <input

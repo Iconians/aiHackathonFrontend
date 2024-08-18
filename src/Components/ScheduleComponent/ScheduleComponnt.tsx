@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import "./ScheduleComponent.css";
 
 type Appointment = {
   date: string;
@@ -18,13 +19,17 @@ export const ScheduleComponent = ({
 }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [moreInfo, setMoreInfo] = useState("");
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleSchedule = async () => {
-    if (!date || !time || !moreInfo) return;
+    if (!date || !time || !moreInfo || !fullName || !phone || !email) return;
 
     try {
-      await axios.post("http://localhost:3000/schedule", {
+      await axios.post(`${apiUrl}/schedule`, {
         userId: userId,
         date,
         time,
@@ -39,7 +44,26 @@ export const ScheduleComponent = ({
   };
 
   return (
-    <div>
+    // add more inputs and make it look and work better
+    <div className="form-wrapper">
+      <input
+        type="text"
+        placeholder="Full Name"
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)}
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="tel"
+        placeholder="Phone"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+      />
       <input
         type="date"
         value={date}
