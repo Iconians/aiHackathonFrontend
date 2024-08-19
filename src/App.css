@@ -61,3 +61,7 @@
 .button {
   background-color: red;
 }
+
+.btn-div  button{
+  margin: 20px;
+}

@@ -65,14 +65,18 @@ function App() {
               otherwise please request an appointment to chat with one of our
               Realtors
             </p>
-            <button onClick={() => setView(1)}>have a questions</button>
-            <button onClick={() => setView(2)}>Schedule an appointment</button>
+            <div className="btn-div">
+              <button onClick={() => setView(1)}>
+                have questions, ask our AI assistant
+              </button>
+              <button onClick={() => setView(2)}>Request an appointment</button>
+            </div>
           </div>
         ) : view === 1 ? (
           <div>
             <h2>Hi I am a AI assistant, how can I help you today</h2>
             <ChatComponent />
-            <button onClick={() => setView(2)}>Schedule an appointment</button>
+            <button onClick={() => setView(2)}>Request an appointment</button>
           </div>
         ) : (
           <div>
@@ -83,7 +87,9 @@ function App() {
             {appointments.length && (
               <Appointments appointments={appointments} />
             )}
-            <button onClick={() => setView(1)}>have a questions</button>
+            <button onClick={() => setView(1)}>
+              have questions, ask our AI assistant
+            </button>
           </div>
         )}
       </div>
